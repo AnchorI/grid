@@ -3,7 +3,11 @@ import { AgGridReact } from 'ag-grid-react'
 import { useTableList } from '../hooks/useTableList'
 import { Button, Divider } from 'antd'
 import { ButtonRow } from './styled/button-row'
-import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons'
+import {
+    FullscreenExitOutlined,
+    FullscreenOutlined,
+    DeleteOutlined,
+} from '@ant-design/icons'
 
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
@@ -39,7 +43,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
 
     useEffect(() => {
         tableUpdate({ page: 1, name: tableName })
-    }, [])
+    }, [tables])
 
     return (
         <>
@@ -53,7 +57,20 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                     marginBottom: 100,
                 }}
             >
-                <Divider>{tableName}</Divider>
+                <Divider>
+                    {tableName}
+                    <Button
+                    style={{marginLeft:'10vh'}}
+                        icon={<DeleteOutlined />}
+                        onClick={() => {
+                            const arr = [...tables]
+                            arr.splice(index, 1)
+                            setTables(arr)
+                        }}
+                        type={'primary'}
+                        danger
+                    />
+                </Divider>
                 <AgGridReact rowData={table.data} columnDefs={table.column} />
                 <ButtonRow>
                     <Button

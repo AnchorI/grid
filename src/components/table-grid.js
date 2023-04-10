@@ -14,7 +14,6 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 
 const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
     const [table, setTable] = useState({})
-    const [tableFullRow, setTableFullRow] = useState(fullrow)
     const { tableUpdate } = useTableList({
         onSuccess: (data) => {
             setTable({
@@ -43,7 +42,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
 
     useEffect(() => {
         tableUpdate({ page: 1, name: tableName })
-    }, [tables])
+    }, [])
 
     return (
         <>
@@ -51,7 +50,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 className="ag-theme-alpine"
                 style={{
                     height: 400,
-                    width: tableFullRow ? '98%' : '48%',
+                    width: fullrow ? '98%' : '48%',
                     marginLeft: '1%',
                     marginRight: '1%',
                     marginBottom: 100,
@@ -85,7 +84,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                     </Button>
                     <Button
                         icon={
-                            tableFullRow ? (
+                            fullrow ? (
                                 <FullscreenExitOutlined />
                             ) : (
                                 <FullscreenOutlined />
@@ -93,30 +92,8 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                         }
                         onClick={() => {
                             const updatedObject = [...tables]
-                            // if (index >= 2) {
-                            //     if (
-                            //         updatedObject[index - 1].fullrow === true ||
-                            //         (updatedObject[index - 1].fullrow ===
-                            //             false &&
-                            //             updatedObject[index - 2].fullrow ===
-                            //                 false)
-                            //     ) {
-                            //         setTableFullRow(!tableFullRow)
-                            //         updatedObject[index].fullrow = tableFullRow
-                            //         setTables(updatedObject)
-                            //     } else {
-                            //         updatedObject[index] = updatedObject.splice(
-                            //             index - 1,
-                            //             1,
-                            //             updatedObject[index]
-                            //         )[0]
-                            //         setTables(updatedObject)
-                            //     }
-                            // } else {
-                            setTableFullRow(!tableFullRow)
-                            updatedObject[index].fullrow = tableFullRow
+                            updatedObject[index].fullrow = !updatedObject[index].fullrow
                             setTables(updatedObject)
-                            // }
                         }}
                     />
                     <Button

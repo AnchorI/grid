@@ -32,16 +32,6 @@ const App = () => {
                                 tables={tables}
                                 setTables={setTables}
                             />
-                            {/* {fullrow === false && (
-                                <ButtonAdd
-                                    onClick={() => {
-                                        setIsModalOpen(true)
-                                    }}
-                                    type={'primary'}
-                                >
-                                    Add table
-                                </ButtonAdd>
-                            )} */}
                         </>
                     )
                 })}

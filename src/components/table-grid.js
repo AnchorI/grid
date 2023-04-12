@@ -28,8 +28,6 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 }),
                 data: data,
                 total: data,
-                // page: data.page,
-                // total_pages: data.total_pages,
             })
         },
         onError: (error) => {
@@ -47,11 +45,11 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
     }
 
     function updateBrandJsonTable(brand_id) {
-        tableUpdate({ page: 1, name: 'brand_json', brand_id: brand_id})
+        tableUpdate({ name: 'brand_json', brand_id: brand_id})
     }
 
     useEffect(() => {
-        tableUpdate({ page: 1, name: tableName })
+        tableUpdate({ name: tableName })
     }, [])
 
     return (
@@ -82,16 +80,16 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 </Divider>
                 <AgGridReact rowData={table.data} columnDefs={table.column} onRowClicked={handleRowClicked} />
                 <ButtonRow>
-                    <Button
-                        onClick={() => {
-                            setTable({ ...table, page: --table.page })
-                            tableUpdate({ page: table.page, name: tableName })
-                        }}
-                        disabled={table.page < 2}
-                        type={'primary'}
-                    >
-                        Prev page
-                    </Button>
+                    {/*<Button*/}
+                    {/*    onClick={() => {*/}
+                    {/*        setTable({ ...table, page: --table.page })*/}
+                    {/*        tableUpdate({ page: table.page, name: tableName })*/}
+                    {/*    }}*/}
+                    {/*    disabled={table.page < 2}*/}
+                    {/*    type={'primary'}*/}
+                    {/*>*/}
+                    {/*    Prev page*/}
+                    {/*</Button>*/}
                     <Button
                         icon={
                             fullrow ? (
@@ -106,16 +104,16 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                             setTables(updatedObject)
                         }}
                     />
-                    <Button
-                        onClick={() => {
-                            setTable({ ...table, page: ++table.page })
-                            tableUpdate({ page: table.page, name: tableName })
-                        }}
-                        disabled={table.total_pages === table.page}
-                        type={'primary'}
-                    >
-                        Next page
-                    </Button>
+                    {/*<Button*/}
+                    {/*    onClick={() => {*/}
+                    {/*        setTable({ ...table, page: ++table.page })*/}
+                    {/*        tableUpdate({ page: table.page, name: tableName })*/}
+                    {/*    }}*/}
+                    {/*    disabled={table.total_pages === table.page}*/}
+                    {/*    type={'primary'}*/}
+                    {/*>*/}
+                    {/*    Next page*/}
+                    {/*</Button>*/}
                 </ButtonRow>
             </div>
         </>

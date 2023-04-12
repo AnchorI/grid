@@ -13,23 +13,23 @@ import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
+const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
     const [table, setTable] = useState({})
     const { tableUpdate } = useTableList({
         onSuccess: (data) => {
             setTable({
                 ...table,
-                column: Object.keys(data[0]).map((el) => {
+                column: Object.keys(id ? data.data : data.data[0]).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
                         filter: 'agTextColumnFilter',
                     }
                 }),
-                data: data,
-                total: data,
-                // page: data.page,
-                // total_pages: data.total_pages,
+                defaultColDef: {
+                    flex: 2,
+                },
+                data: id ? [data.data] : data.data,
             })
         },
         onError: (error) => {
@@ -42,16 +42,14 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
     })
 
     function handleRowClicked(event) {
-        console.log('Row clicked:', event.data.id);
-        updateBrandJsonTable(event.data.id);
-    }
-
-    function updateBrandJsonTable(brand_id) {
-        tableUpdate({ page: 1, name: 'brand_json', brand_id: brand_id})
+        setTables([
+            ...tables,
+            { name: 'users', fullrow: false, id: event.data.id },
+        ])
     }
 
     useEffect(() => {
-        tableUpdate({ page: 1, name: tableName })
+        tableUpdate({ name: tableName, brand_id: id })
     }, [])
 
     return (
@@ -69,7 +67,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 <Divider>
                     {tableName}
                     <Button
-                    style={{marginLeft:'10vh'}}
+                        style={{ marginLeft: '10vh' }}
                         icon={<DeleteOutlined />}
                         onClick={() => {
                             const arr = [...tables]
@@ -80,18 +78,13 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                         danger
                     />
                 </Divider>
-                <AgGridReact rowData={table.data} columnDefs={table.column} onRowClicked={handleRowClicked} />
+                <AgGridReact
+                    defaultColDef={table.defaultColDef}
+                    rowData={table.data}
+                    columnDefs={table.column}
+                    onRowClicked={handleRowClicked}
+                />
                 <ButtonRow>
-                    <Button
-                        onClick={() => {
-                            setTable({ ...table, page: --table.page })
-                            tableUpdate({ page: table.page, name: tableName })
-                        }}
-                        disabled={table.page < 2}
-                        type={'primary'}
-                    >
-                        Prev page
-                    </Button>
                     <Button
                         icon={
                             fullrow ? (
@@ -102,20 +95,11 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                         }
                         onClick={() => {
                             const updatedObject = [...tables]
-                            updatedObject[index].fullrow = !updatedObject[index].fullrow
+                            updatedObject[index].fullrow =
+                                !updatedObject[index].fullrow
                             setTables(updatedObject)
                         }}
                     />
-                    <Button
-                        onClick={() => {
-                            setTable({ ...table, page: ++table.page })
-                            tableUpdate({ page: table.page, name: tableName })
-                        }}
-                        disabled={table.total_pages === table.page}
-                        type={'primary'}
-                    >
-                        Next page
-                    </Button>
                 </ButtonRow>
             </div>
         </>

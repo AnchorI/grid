@@ -6,8 +6,8 @@ import TableGrid from './components/table-grid'
 
 const App = () => {
     const [tables, setTables] = useState([
-        { name: 'brand', fullrow: true },
-        { name: 'brand_json', fullrow: false },
+        { name: 'users', fullrow: true },
+        // { name: 'brand_json', fullrow: false },
     ])
     const [isModalOpen, setIsModalOpen] = useState(false)
     console.log('tables', tables)
@@ -21,13 +21,14 @@ const App = () => {
             />
 
             <Row>
-                {tables.map(({ name, fullrow }, index) => {
+                {tables.map(({ name, fullrow, id }, index) => {
                     return (
                         <>
                             <TableGrid
                                 tableName={name}
                                 fullrow={fullrow}
                                 index={index}
+                                id={id}
                                 tables={tables}
                                 setTables={setTables}
                             />

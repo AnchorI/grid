@@ -53,56 +53,54 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
     }, [])
 
     return (
-        <>
-            <div
-                className="ag-theme-alpine"
-                style={{
-                    height: 400,
-                    width: fullrow ? '98%' : '48%',
-                    marginLeft: '1%',
-                    marginRight: '1%',
-                    marginBottom: 100,
-                }}
-            >
-                <Divider>
-                    {tableName}
-                    <Button
-                        style={{ marginLeft: '10vh' }}
-                        icon={<DeleteOutlined />}
-                        onClick={() => {
-                            const arr = [...tables]
-                            arr.splice(index, 1)
-                            setTables(arr)
-                        }}
-                        type={'primary'}
-                        danger
-                    />
-                </Divider>
-                <AgGridReact
-                    defaultColDef={table.defaultColDef}
-                    rowData={table.data}
-                    columnDefs={table.column}
-                    onRowClicked={handleRowClicked}
+        <div
+            className="ag-theme-alpine"
+            style={{
+                height: 400,
+                width: fullrow ? '98%' : '48%',
+                marginLeft: '1%',
+                marginRight: '1%',
+                marginBottom: 100,
+            }}
+        >
+            <Divider>
+                {tableName}
+                <Button
+                    style={{ marginLeft: '10vh' }}
+                    icon={<DeleteOutlined />}
+                    onClick={() => {
+                        const arr = [...tables]
+                        arr.splice(index, 1)
+                        setTables(arr)
+                    }}
+                    type={'primary'}
+                    danger
                 />
-                <ButtonRow>
-                    <Button
-                        icon={
-                            fullrow ? (
-                                <FullscreenExitOutlined />
-                            ) : (
-                                <FullscreenOutlined />
-                            )
-                        }
-                        onClick={() => {
-                            const updatedObject = [...tables]
-                            updatedObject[index].fullrow =
-                                !updatedObject[index].fullrow
-                            setTables(updatedObject)
-                        }}
-                    />
-                </ButtonRow>
-            </div>
-        </>
+            </Divider>
+            <AgGridReact
+                defaultColDef={table.defaultColDef}
+                rowData={table.data}
+                columnDefs={table.column}
+                onRowClicked={handleRowClicked}
+            />
+            <ButtonRow>
+                <Button
+                    icon={
+                        fullrow ? (
+                            <FullscreenExitOutlined />
+                        ) : (
+                            <FullscreenOutlined />
+                        )
+                    }
+                    onClick={() => {
+                        const updatedObject = [...tables]
+                        updatedObject[index].fullrow =
+                            !updatedObject[index].fullrow
+                        setTables(updatedObject)
+                    }}
+                />
+            </ButtonRow>
+        </div>
     )
 }
 

@@ -10,7 +10,7 @@ const App = () => {
         { name: 'brand_json', fullrow: false },
     ])
     const [isModalOpen, setIsModalOpen] = useState(false)
-    console.log('tables', tables)
+
     return (
         <>
             <AddModal

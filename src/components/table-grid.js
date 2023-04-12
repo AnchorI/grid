@@ -19,17 +19,17 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
         onSuccess: (data) => {
             setTable({
                 ...table,
-                column: Object.keys(data.data[0]).map((el) => {
+                column: Object.keys(data[0]).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
                         filter: 'agTextColumnFilter',
                     }
                 }),
-                data: data.data,
-                total: data.total,
-                page: data.page,
-                total_pages: data.total_pages,
+                data: data,
+                total: data,
+                // page: data.page,
+                // total_pages: data.total_pages,
             })
         },
         onError: (error) => {
@@ -40,6 +40,15 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
             console.log(error)
         },
     })
+
+    function handleRowClicked(event) {
+        console.log('Row clicked:', event.data.id);
+        updateBrandJsonTable(event.data.id);
+    }
+
+    function updateBrandJsonTable(brand_id) {
+        tableUpdate({ page: 1, name: 'brand_json', brand_id: brand_id})
+    }
 
     useEffect(() => {
         tableUpdate({ page: 1, name: tableName })
@@ -71,7 +80,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                         danger
                     />
                 </Divider>
-                <AgGridReact rowData={table.data} columnDefs={table.column} />
+                <AgGridReact rowData={table.data} columnDefs={table.column} onRowClicked={handleRowClicked} />
                 <ButtonRow>
                     <Button
                         onClick={() => {

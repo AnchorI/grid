@@ -1,6 +1,10 @@
 export const useTableList = ({ onSuccess, onError }) => {
-    const getData = async ({page, name}) => {
-        await fetch(`https://reqres.in/api/${name}?page=${page}`)
+    const getData = async ({page, name, brand_id}) => {
+
+        const getList = `http://localhost:8777/api/slave/${name}`
+        const get = `http://localhost:8777/api/slave/brand/${brand_id}`
+
+        await fetch(brand_id ? get : getList)
             .then(async (response) => {
                 if (response.status === 200) {
                     return response.json()
@@ -17,8 +21,8 @@ export const useTableList = ({ onSuccess, onError }) => {
     }
 
     return {
-        tableUpdate: ({page, name}) => {
-            getData({page, name})
+        tableUpdate: ({page, name, brand_id}) => {
+            getData({page, name, brand_id})
         },
     }
 }

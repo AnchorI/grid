@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { useTableList } from '../hooks/useTableList'
 import { Button, Divider } from 'antd'
@@ -13,13 +13,14 @@ import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
+const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
     const [table, setTable] = useState({})
+    const [selectedRow, setSelectedRow] = useState(null);
     const { tableUpdate } = useTableList({
         onSuccess: (data) => {
             setTable({
                 ...table,
-                column: Object.keys(data[0]).map((el) => {
+                column: Object.keys(id ? data.data : data.data[0]).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
@@ -28,10 +29,8 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 }),
                 defaultColDef: {
                     flex: 2,
-                    floatingFilter: true
                 },
-                data: data,
-                total: data,
+                data: id ? [data.data] : data.data,
             })
         },
         onError: (error) => {
@@ -44,20 +43,29 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
     })
 
     function handleRowClicked(event) {
-        console.log('Row clicked:', event.data.id);
-        updateBrandJsonTable(event.data.id);
-    }
-
-    function updateBrandJsonTable(brand_id) {
-        tableUpdate({ name: 'brand_json', brand_id: brand_id });
+        const tableIndex = tables.findIndex((table) => table.name === "user");
+        if (tableIndex !== -1) {
+            const updatedTable = Object.assign({}, tables[tableIndex], {
+                fullrow: false,
+                id: event.data.id,
+            });
+            const updatedTables = tables.slice();
+            updatedTables.splice(tableIndex, 1, updatedTable);
+            setTables(updatedTables);
+        } else {
+            setTables([
+                ...tables,
+                { name: "user", fullrow: false, id: event.data.id },
+            ]);
+        }
+        setSelectedRow(event.data);
     }
 
     useEffect(() => {
-        tableUpdate({ name: tableName })
-    }, [])
+        tableUpdate({ name: tableName, brand_id: id })
+    }, [tableName, id])
 
     return (
-        <>
             <div
                 className="ag-theme-alpine"
                 style={{
@@ -71,7 +79,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                 <Divider>
                     {tableName}
                     <Button
-                    style={{marginLeft:'10vh'}}
+                        style={{ marginLeft: '10vh' }}
                         icon={<DeleteOutlined />}
                         onClick={() => {
                             const arr = [...tables]
@@ -83,10 +91,15 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                     />
                 </Divider>
                 <AgGridReact
+                    defaultColDef={table.defaultColDef}
                     rowData={table.data}
                     columnDefs={table.column}
                     onRowClicked={handleRowClicked}
-                    defaultColDef={table.defaultColDef}
+                    rowSelection='single'
+                    suppressRowClickSelection={true}
+                    getRowClass={(params) => {
+                        return selectedRow && selectedRow.id === params.data.id ? 'selected' : '';
+                    }}
                 />
                 <ButtonRow>
                     <Button
@@ -99,13 +112,13 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables }) => {
                         }
                         onClick={() => {
                             const updatedObject = [...tables]
-                            updatedObject[index].fullrow = !updatedObject[index].fullrow
+                            updatedObject[index].fullrow =
+                                !updatedObject[index].fullrow
                             setTables(updatedObject)
                         }}
                     />
                 </ButtonRow>
             </div>
-        </>
     )
 }
 

@@ -5,11 +5,6 @@ export const useTableList = ({ onSuccess, onError }) => {
 
         // const getList = `http://185.150.155.18:8777/api/slave/${name}`
         // const get = `http://185.150.155.18:8777/api/slave/brand/${brand_id}`
-<<<<<<< Updated upstream
-        //const getList = `http://localhost:8777/api/slave/${name}`
-        //const get = `http://localhost:8777/api/slave/brand/${brand_id}`
-=======
->>>>>>> Stashed changes
 
         await fetch(brand_id ? get : getList)
             .then(async (response) => {
@@ -28,8 +23,8 @@ export const useTableList = ({ onSuccess, onError }) => {
     }
 
     return {
-        tableUpdate: ({ name, brand_id}) => {
-            getData({ name, brand_id})
+        tableUpdate: ({ name, brand_id }) => {
+            getData({ name, brand_id })
         },
     }
 }

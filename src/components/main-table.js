@@ -23,7 +23,7 @@ const MainTable = ({ props }) => {
             <Row>
                 {mainTable.subTables.map((el) => (
                     <Col span={colWidth(mainTable.subTables.length)}>
-                        <Table props={el}/>
+                        <Table props={el} />
                     </Col>
                 ))}
             </Row>

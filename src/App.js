@@ -1,4 +1,3 @@
-import { Row } from 'antd'
 import React, { useState } from 'react'
 import MainTable from './components/main-table'
 
@@ -15,7 +14,7 @@ const App = () => {
     return (
         <>
             {mainTables.map((el, index) => (
-                <MainTable {...mainTables[index]}/>
+                <MainTable props={mainTables[index]}/>
             ))}
         </>
     )

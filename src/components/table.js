@@ -7,14 +7,16 @@ import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const Table = ({ props, setMainTable}) => {
+const Table = ({ props, setMainTable }) => {
     const [isMain] = useState(!!props.subTables)
     const [table, setTable] = useState(props)
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
             setTable({
                 ...table,
-                columnDefs: Object.keys(isMain ? response.data[0] : response.data).map((el) => {
+                columnDefs: Object.keys(
+                    isMain ? response.data[0] : response.data
+                ).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
@@ -31,7 +33,6 @@ const Table = ({ props, setMainTable}) => {
 
     const handleRowClicked = (event) => {
         if (isMain) {
-            //Основная таблица
             const updatedTables = props.fields.map((table) => {
                 return {
                     name: table,
@@ -43,8 +44,8 @@ const Table = ({ props, setMainTable}) => {
     }
 
     useEffect(() => {
-        tableUpdate({ name: table.name, brand_id: table.id })
-    }, [])
+        tableUpdate({ name: table.name, brand_id: props?.id })
+    }, [props?.id])
 
     return (
         <div

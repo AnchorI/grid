@@ -2,8 +2,8 @@ import { Col, Row } from 'antd'
 import Table from './table'
 import React, { useState } from 'react'
 
-const MainTable = (props) => {
-    const [mainTable, setMainTable] = useState({...props})
+const MainTable = ({ props }) => {
+    const [mainTable, setMainTable] = useState({ ...props })
 
     const colWidth = (length) => {
         if (length <= 4) {

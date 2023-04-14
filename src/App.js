@@ -35,14 +35,14 @@ const App = () => {
                         </>
                     )
                 })}
-                <ButtonAdd
+                {/* <ButtonAdd
                     onClick={() => {
                         setIsModalOpen(true)
                     }}
                     type={'primary'}
                 >
                     Add table
-                </ButtonAdd>
+                </ButtonAdd> */}
             </Row>
         </>
     )

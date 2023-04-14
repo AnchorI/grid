@@ -63,7 +63,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
 
     useEffect(() => {
         tableUpdate({ name: tableName, brand_id: id })
-    }, [])
+    }, [tableName, id])
 
     return (
             <div

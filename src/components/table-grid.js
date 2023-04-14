@@ -20,7 +20,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
         onSuccess: (data) => {
             setTable({
                 ...table,
-                column: Object.keys(id ? data.data : data.data[0]).map((el) => {
+                column: Object.keys(data[0]).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
@@ -30,7 +30,7 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
                 defaultColDef: {
                     flex: 2,
                 },
-                data: id ? [data.data] : data.data,
+                data: data,
             })
         },
         onError: (error) => {
@@ -43,21 +43,17 @@ const TableGrid = ({ tableName, fullrow, index, tables, setTables, id }) => {
     })
 
     function handleRowClicked(event) {
-        const tableIndex = tables.findIndex((table) => table.name === "user");
-        if (tableIndex !== -1) {
-            const updatedTable = Object.assign({}, tables[tableIndex], {
-                fullrow: false,
-                id: event.data.id,
-            });
-            const updatedTables = tables.slice();
-            updatedTables.splice(tableIndex, 1, updatedTable);
-            setTables(updatedTables);
-        } else {
-            setTables([
-                ...tables,
-                { name: "user", fullrow: false, id: event.data.id },
-            ]);
-        }
+        const updatedTables = tables.map((table) => {
+            if (table.name === "user" || table.name === "testNameTable") {
+                return {
+                    ...table,
+                    fullrow: false,
+                    id: event.data.id,
+                };
+            }
+            return table;
+        });
+        setTables(updatedTables);
         setSelectedRow(event.data);
     }
 

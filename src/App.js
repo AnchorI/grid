@@ -6,8 +6,9 @@ import TableGrid from './components/table-grid'
 
 const App = () => {
     const [tables, setTables] = useState([
-        { name: 'users', fullrow: true },
-        // { name: 'brand_json', fullrow: false },
+        { name: 'brand', fullrow: true },
+        { name: 'user', fullrow: false },
+        { name: 'testNameTable', fullrow: false },
     ])
     const [isModalOpen, setIsModalOpen] = useState(false)
 

@@ -1,29 +1,28 @@
 import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
 import React, { useEffect, useState } from 'react'
+
 import { useTableList } from '../hooks/useTableList'
 
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const Table = ({ props, setMainTable }) => {
-    const [isMain] = useState(!!props.subTables)
-    const [table, setTable] = useState(props)
+const Table = ({ props, update, name }) => {
+    console.log(name)
+    const [table, setTable] = useState()
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
             setTable({
                 ...table,
-                columnDefs: Object.keys(
-                    isMain ? response.data[0] : response.data
-                ).map((el) => {
+                columnDefs: Object.keys(response.data).map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
                         filter: 'agTextColumnFilter',
                     }
                 }),
-                rowData: isMain ? response.data : [response.data],
+                rowData: [response.data],
             })
         },
         onError: (error) => {
@@ -31,21 +30,9 @@ const Table = ({ props, setMainTable }) => {
         },
     })
 
-    const handleRowClicked = (event) => {
-        if (isMain) {
-            const updatedTables = props.fields.map((table) => {
-                return {
-                    name: table,
-                    id: event.data.id,
-                }
-            })
-            setMainTable({ ...props, subTables: updatedTables })
-        }
-    }
-
     useEffect(() => {
-        tableUpdate({ name: table.name, brand_id: props?.id })
-    }, [props?.id])
+        tableUpdate({ name: props.name, brand_id: props.id })
+    }, [update])
 
     return (
         <div
@@ -57,14 +44,11 @@ const Table = ({ props, setMainTable }) => {
                 marginBottom: 100,
             }}
         >
-            <Divider>{table.name}</Divider>
+            <Divider>{props.name}</Divider>
             <AgGridReact
-                columnDefs={table.columnDefs}
-                rowData={table.rowData}
+                columnDefs={table?.columnDefs}
+                rowData={table?.rowData}
                 defaultColDef={{ flex: 2, minWidth: 200 }}
-                onRowClicked={handleRowClicked}
-                rowSelection="single"
-                suppressRowClickSelection={true}
             />
         </div>
     )

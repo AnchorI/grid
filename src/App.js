@@ -33,10 +33,10 @@ const App = () => {
 
     return (
         <>
-            <Radio.Group>
+            <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
                 {mainTables.map((el) => (
                     <Radio.Button>
-                        <Link to={el.name}>{el.name}</Link>
+                        <Link to={el.name} style={{color: 'white'}}>{el.name}</Link>
                     </Radio.Button>
                 ))}
             </Radio.Group>

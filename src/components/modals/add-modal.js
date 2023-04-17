@@ -2,8 +2,9 @@ import { Modal, Input, Button } from 'antd'
 import { useState } from 'react'
 const AddModal = ({ isModalOpen, setIsModalOpen, tables, setTables }) => {
     const [tableName, setTableName] = useState(null)
+    const [querryName, setQuerryName] = useState(null)
     const handleOk = () => {
-        setTables([...tables, {name: tableName, fullrow: false}])
+        setTables([...tables, {name: tableName, fullrow: false, querry: querryName}])
         handleCancel()
     }
     const handleCancel = () => {
@@ -29,6 +30,13 @@ const AddModal = ({ isModalOpen, setIsModalOpen, tables, setTables }) => {
                     value={tableName}
                     onChange={(event) => {
                         setTableName(event.target.value)
+                    }}
+                ></Input>
+                Querry
+                <Input
+                    value={querryName}
+                    onChange={(event) => {
+                        setQuerryName(event.target.value)
                     }}
                 ></Input>
             </Modal>

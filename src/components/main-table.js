@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd'
+import {Col, Row, Select} from 'antd'
 import React, { useEffect, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
@@ -12,6 +12,11 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 const MainTable = ({ props }) => {
     const [table, setTable] = useState()
     const [row, setRow] = useState()
+    const [filter, setFilter] = useState({
+        as_mnemokod: null,
+    });
+    const { Option } = Select;
+
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
             setTable({
@@ -21,6 +26,7 @@ const MainTable = ({ props }) => {
                     return {
                         field: el,
                         rowDarag: true,
+                        rowGroupIndex: el === 'server_os' ? 0 : '',
                         filter: 'agTextColumnFilter',
                     }
                 }),
@@ -33,6 +39,7 @@ const MainTable = ({ props }) => {
     })
 
     const handleRowClicked = (event) => {
+        if (!props.fields) return
         const updatedTables = props.fields.map((table) => {
             return {
                 name: table,
@@ -52,12 +59,29 @@ const MainTable = ({ props }) => {
     }
 
     useEffect(() => {
-        tableUpdate({ name: props.name })
-    }, [props.name])
+        tableUpdate({ name: props.name, mnemokod: filter.as_mnemokod })
+    }, [props.name, filter.as_mnemokod])
 
     return (
         <>
             <Row>
+                <Col>
+                    <div>AS Mnemokod:</div>
+                    <Select
+                        style={{ width: 200 }}
+                        value={filter.as_mnemokod === null ? '' : filter.as_mnemokod}
+                        showSearch
+                        onChange={(value) => {
+                            setFilter({ ...filter, as_mnemokod: value });
+                        }}
+                    >
+                        <Option value={''}>Все</Option>
+                        <Option value={"PLC"}>PLC</Option>
+                        <Option value={"PLD"}>PLD</Option>
+                        <Option value={"STD"}>STD</Option>
+
+                    </Select>
+                </Col>
                 <Col span={24}>
                     <div
                         className="ag-theme-alpine"
@@ -76,6 +100,7 @@ const MainTable = ({ props }) => {
                             rowSelection="single"
                             suppressRowClickSelection={true}
                             onRowClicked={handleRowClicked}
+                            sideBar={'columns'}
                         />
                     </div>
                 </Col>

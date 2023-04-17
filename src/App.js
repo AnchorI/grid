@@ -2,37 +2,36 @@ import React, { useState } from 'react'
 import MainTable from './components/main-table'
 import { Routes, Route, Link } from 'react-router-dom'
 import { Radio } from 'antd'
+import AddModal from './components/modals/add-modal'
+import { ButtonAdd } from './components/styled/button-add'
 
 const App = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [mainTables, setMainTables] = useState([
         {
-            name: 'brand',
+            name: 'servers',
             fullrow: true,
-            fields: ['testFirst', 'testSecond', 'testThird', 'users'],
+            fields: ['users', 'soft', 'services'],
             subTables: [],
-        },
-        {
-            name: 'small_test',
-            fullrow: true,
-            fields: ['users', 'b', 'c'],
-            subTables: [],
-        },
-        {
-            name: 'big_test',
-            fullrow: true,
-            fields: ['users', 'two'],
-            subTables: [],
-        },
-        {
-            name: 'users',
-            fullrow: true,
-            fields: ['users', 'testSecond', 'testThird', 'testFourth'],
-            subTables: [],
-        },
+        }
     ])
 
     return (
         <>
+            <AddModal
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                tables={mainTables}
+                setTables={setMainTables}
+            />
+            <ButtonAdd
+                onClick={() => {
+                    setIsModalOpen(true)
+                }}
+                type={'primary'}
+            >
+                Add table
+            </ButtonAdd>
             <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
                 {mainTables.map((el) => (
                     <Radio.Button>

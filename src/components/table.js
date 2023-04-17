@@ -12,8 +12,10 @@ const Table = ({ props, update, name }) => {
     const [table, setTable] = useState()
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
+            console.log('res', response)
             setTable({
                 ...table,
+                pivotMode: true,
                 columnDefs: Object.keys(response.data).filter(key => key !== "id").map((el) => {
                     return {
                         field: el,

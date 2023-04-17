@@ -1,50 +1,51 @@
-import { Row } from 'antd'
-import React, { useState, useEffect } from 'react'
-import AddModal from './components/modals/add-modal'
-import { ButtonAdd } from './components/styled/button-add'
-import TableGrid from './components/table-grid'
+import React, { useState } from 'react'
+import MainTable from './components/main-table'
+import { Routes, Route, Link } from 'react-router-dom'
+import { Radio } from 'antd'
 
 const App = () => {
-    const [tables, setTables] = useState([
-        { name: 'brand', fullrow: true },
-        { name: 'user', fullrow: false },
-        { name: 'testNameTable', fullrow: false },
+    const [mainTables, setMainTables] = useState([
+        {
+            name: 'brand',
+            fullrow: true,
+            fields: ['testFirst', 'testSecond', 'testThird', 'users'],
+            subTables: [],
+        },
+        {
+            name: 'small_test',
+            fullrow: true,
+            fields: ['users', 'b', 'c'],
+            subTables: [],
+        },
+        {
+            name: 'big_test',
+            fullrow: true,
+            fields: ['users', 'two'],
+            subTables: [],
+        },
+        {
+            name: 'users',
+            fullrow: true,
+            fields: ['users', 'testSecond', 'testThird', 'testFourth'],
+            subTables: [],
+        },
     ])
-    const [isModalOpen, setIsModalOpen] = useState(false)
 
     return (
         <>
-            <AddModal
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-                tables={tables}
-                setTables={setTables}
-            />
+            <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
+                {mainTables.map((el) => (
+                    <Radio.Button>
+                        <Link to={el.name} style={{color: 'white'}}>{el.name}</Link>
+                    </Radio.Button>
+                ))}
+            </Radio.Group>
 
-            <Row>
-                {tables.map(({ name, fullrow, id }, index) => {
-                    return (
-                        <>
-                            <TableGrid
-                                tableName={name}
-                                fullrow={fullrow}
-                                index={index}
-                                id={id}
-                                tables={tables}
-                                setTables={setTables}
-                            />
-                        </>
-                    )
-                })}
-                {/* <ButtonAdd
-                    onClick={() => {
-                        setIsModalOpen(true)
-                    }}
-                    type={'primary'}
-                >
-                    Add table
-                </ButtonAdd> */}
-            </Row>
+            <Routes>
+                {mainTables.map((el) => (
+                    <Route path={el.name} element={<MainTable props={el} />} />
+                ))}
+            </Routes>
         </>
     )
 }

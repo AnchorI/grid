@@ -43,7 +43,8 @@ const MainTable = ({ props }) => {
         const updatedTables = props.fields.map((table) => {
             return {
                 name: table,
-                id: event.data.id,
+                id: event.data ? event.data.id : null,
+                mnemokod: ''
             }
         })
         setRow(updatedTables)
@@ -86,7 +87,7 @@ const MainTable = ({ props }) => {
                     <div
                         className="ag-theme-alpine"
                         style={{
-                            height: 350,
+                            height: 400,
                             marginLeft: 10,
                             marginRight: 10,
                             marginBottom: 100,

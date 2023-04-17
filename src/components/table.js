@@ -9,13 +9,12 @@ import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
 const Table = ({ props, update, name }) => {
-    console.log(name)
     const [table, setTable] = useState()
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
             setTable({
                 ...table,
-                columnDefs: Object.keys(response.data).map((el) => {
+                columnDefs: Object.keys(response.data).filter(key => key !== "id").map((el) => {
                     return {
                         field: el,
                         rowDarag: true,

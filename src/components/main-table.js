@@ -17,7 +17,7 @@ const MainTable = ({ props }) => {
             setTable({
                 ...table,
                 name: props.name,
-                columnDefs: Object.keys(response.data[0]).map((el) => {
+                columnDefs: Object.keys(response.data[0]).filter(key => key !== "id").map((el) => {
                     return {
                         field: el,
                         rowDarag: true,

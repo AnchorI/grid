@@ -5,10 +5,10 @@ export const useTableList = ({ onSuccess, onError }) => {
         // const getList = `https://reqres.in/api/${name}`
         // const get = `https://reqres.in/api/${name}/${brand_id}`
 
-        const getList = `http://localhost:8777/api/slave/${name}?as_mnemokod=${mnemokod}`
-        const get = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
+        const getServerList = `http://localhost:8777/api/slave/${name}?as_mnemokod=${mnemokod}`
+        const getServer = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
 
-        await fetch(brand_id ? get : getList)
+        await fetch(brand_id ? getServer : getServerList)
             .then(async (response) => {
                 if (response.status === 200) {
                     return response.json()

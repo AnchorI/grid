@@ -24,14 +24,14 @@ const App = () => {
                 tables={mainTables}
                 setTables={setMainTables}
             />
-            <ButtonAdd
-                onClick={() => {
-                    setIsModalOpen(true)
-                }}
-                type={'primary'}
-            >
-                Add table
-            </ButtonAdd>
+            {/*<ButtonAdd*/}
+            {/*    onClick={() => {*/}
+            {/*        setIsModalOpen(true)*/}
+            {/*    }}*/}
+            {/*    type={'primary'}*/}
+            {/*>*/}
+            {/*    Add table*/}
+            {/*</ButtonAdd>*/}
             <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
                 {mainTables.map((el) => (
                     <Radio.Button>

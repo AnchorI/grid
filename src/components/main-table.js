@@ -67,6 +67,7 @@ const MainTable = ({ props }) => {
         <>
             <Row>
                 <Col>
+                    <br></br>
                     <div>AS Mnemokod:</div>
                     <Select
                         style={{ width: 200 }}

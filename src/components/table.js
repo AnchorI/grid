@@ -1,6 +1,6 @@
 import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 
 import { useTableList } from '../hooks/useTableList'
 
@@ -10,6 +10,17 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 
 const Table = ({ props, update, name }) => {
     const [table, setTable] = useState()
+    const statusBar = useMemo(() => {
+        return {
+            statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                { statusPanel: 'agTotalRowCountComponent', align: 'center' },
+                { statusPanel: 'agFilteredRowCountComponent' },
+                { statusPanel: 'agSelectedRowCountComponent' },
+                { statusPanel: 'agAggregationComponent' },
+            ],
+        };
+    }, []);
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
             console.log('res', response)
@@ -50,6 +61,7 @@ const Table = ({ props, update, name }) => {
                 columnDefs={table?.columnDefs}
                 rowData={table?.rowData}
                 defaultColDef={{ flex: 2, minWidth: 200 }}
+                statusBar={statusBar}
             />
         </div>
     )

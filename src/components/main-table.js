@@ -1,5 +1,5 @@
 import {Col, Row, Select} from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
 import { useTableList } from '../hooks/useTableList'
@@ -12,6 +12,17 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 const MainTable = ({ props }) => {
     const [table, setTable] = useState()
     const [row, setRow] = useState()
+    const statusBar = useMemo(() => {
+        return {
+            statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                { statusPanel: 'agTotalRowCountComponent', align: 'center' },
+                { statusPanel: 'agFilteredRowCountComponent' },
+                { statusPanel: 'agSelectedRowCountComponent' },
+                { statusPanel: 'agAggregationComponent' },
+            ],
+        };
+    }, []);
     const [filter, setFilter] = useState({
         as_mnemokod: null,
     });
@@ -28,6 +39,7 @@ const MainTable = ({ props }) => {
                         rowDarag: true,
                         rowGroupIndex: el === 'server_os' ? 0 : '',
                         filter: 'agTextColumnFilter',
+                        enableValue: el === 'memory'
                     }
                 }),
                 rowData: response.data,
@@ -103,6 +115,8 @@ const MainTable = ({ props }) => {
                             suppressRowClickSelection={true}
                             onRowClicked={handleRowClicked}
                             sideBar={'columns'}
+                            statusBar={statusBar}
+
                         />
                     </div>
                 </Col>

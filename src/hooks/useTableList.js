@@ -4,11 +4,10 @@ export const useTableList = ({ onSuccess, onError }) => {
 
         // const getList = `https://reqres.in/api/${name}`
         // const get = `https://reqres.in/api/${name}/${brand_id}`
+        const getServerList = `http://localhost:8777/api/slave/querry?table=${name}&brand_id=${brand_id}`
+        // const getServer = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
 
-        const getServerList = `http://localhost:8777/api/slave/${name}?as_mnemokod=${mnemokod}`
-        const getServer = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
-
-        await fetch(brand_id ? getServer : getServerList)
+        await fetch(getServerList)
             .then(async (response) => {
                 if (response.status === 200) {
                     return response.json()

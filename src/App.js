@@ -11,7 +11,13 @@ const App = () => {
         {
             name: 'servers',
             fullrow: true,
-            fields: ['users', 'soft', 'services'],
+            fields: ['test'],
+            subTables: [],
+        },
+        {
+            name: 'users',
+            fullrow: true,
+            fields: ['users'],
             subTables: [],
         }
     ])

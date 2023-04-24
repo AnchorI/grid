@@ -23,18 +23,19 @@ const Table = ({ props, update, name }) => {
     }, []);
     const { tableUpdate } = useTableList({
         onSuccess: (response) => {
-            console.log('res', response)
             setTable({
                 ...table,
                 pivotMode: true,
-                columnDefs: Object.keys(response.data).filter(key => key !== "id").map((el) => {
+                columnDefs: Object.keys(response.data[0]).filter(key => key !== "id").map((el) => {
                     return {
                         field: el,
                         rowDarag: true,
                         filter: 'agTextColumnFilter',
+                        sortable: true,
+                        floatingFilter: true,
                     }
                 }),
-                rowData: [response.data],
+                rowData: response.data,
             })
         },
         onError: (error) => {

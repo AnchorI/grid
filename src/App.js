@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import MainTable from './components/main-table'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Radio } from 'antd'
 import AddModal from './components/modals/add-modal'
-import { ButtonAdd } from './components/styled/button-add'
+import LoginPage from "./LoginPage";
 
 const App = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -30,14 +30,6 @@ const App = () => {
                 tables={mainTables}
                 setTables={setMainTables}
             />
-            {/*<ButtonAdd*/}
-            {/*    onClick={() => {*/}
-            {/*        setIsModalOpen(true)*/}
-            {/*    }}*/}
-            {/*    type={'primary'}*/}
-            {/*>*/}
-            {/*    Add table*/}
-            {/*</ButtonAdd>*/}
             <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
                 {mainTables.map((el) => (
                     <Radio.Button>
@@ -47,6 +39,8 @@ const App = () => {
             </Radio.Group>
 
             <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={<Navigate to="/login" />} />
                 {mainTables.map((el) => (
                     <Route path={el.name} element={<MainTable props={el} />} />
                 ))}

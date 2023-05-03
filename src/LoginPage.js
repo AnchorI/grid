@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
-const LoginPage = () => {
+const LoginPage = ({ setIsAuthenticated }) => { // Добавлено новое свойство setIsAuthenticated
     const history = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -17,10 +17,13 @@ const LoginPage = () => {
         });
         const { data } = await response.json();
         if (data) {
+            localStorage.setItem('isAuthenticated', 'true');
+            setIsAuthenticated(true);
             history('/servers');
         } else {
             alert('Invalid credentials');
         }
+
     };
 
     return (

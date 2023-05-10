@@ -1,15 +1,16 @@
-import {Col, Row, Select} from 'antd'
+import {Button, Col, Row, Select} from 'antd'
 import React, {useEffect, useMemo, useState} from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
 import { useTableList } from '../hooks/useTableList'
 import Table from './table'
+import './main-table.css'
 
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const MainTable = ({ props }) => {
+const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     const [table, setTable] = useState()
     const [row, setRow] = useState()
     const statusBar = useMemo(() => {
@@ -88,6 +89,11 @@ const MainTable = ({ props }) => {
         }
     }
 
+    const handleLogout = () => {
+        localStorage.setItem('isAuthenticated', 'false');
+        setIsAuthenticated(false);
+    };
+
     useEffect(() => {
         tableUpdate({ name: props.name, mnemokod: filter.as_mnemokod })
         console.log('props', props)
@@ -95,25 +101,19 @@ const MainTable = ({ props }) => {
 
     return (
         <>
-            <Row>
+            <Row justify="end">
                 <Col>
-                    <br></br>
-                    <div>AS Mnemokod:</div>
-                    <Select
-                        style={{ width: 200 }}
-                        value={filter.as_mnemokod === null ? '' : filter.as_mnemokod}
-                        showSearch
-                        onChange={(value) => {
-                            setFilter({ ...filter, as_mnemokod: value });
-                        }}
-                    >
-                        <Option value={''}>Все</Option>
-                        <Option value={"PLC"}>PLC</Option>
-                        <Option value={"PLD"}>PLD</Option>
-                        <Option value={"STD"}>STD</Option>
-
-                    </Select>
+                    <div className="auth-status">
+                        {isAuthenticated ? (
+                            <span>Залогинен {localStorage.getItem('groups')}</span>
+                        ) : (
+                            <span>Не залогинен</span>
+                        )}
+                    </div>
+                    <Button onClick={handleLogout}>Log out</Button>
                 </Col>
+            </Row>
+            <Row>
                 <Col span={24}>
                     <div
                         className="ag-theme-alpine"

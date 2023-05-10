@@ -22,7 +22,6 @@ const App = () => {
             subTables: [],
         }
     ]);
-
     return (
         <>
             <AddModal
@@ -42,10 +41,10 @@ const App = () => {
             </Radio.Group>
 
             <Routes>
-                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated}/>} />
                 <Route path="/" element={isAuthenticated ? <Navigate to="/servers" /> : <Navigate to="/login" />} /> {/* Перенаправление на страницу логина, если пользователь не авторизован */}
                 {mainTables.map((el) => (
-                    <Route key={el.name} path={el.name} element={isAuthenticated ? <MainTable props={el} /> : <Navigate to="/login" />} />
+                    <Route key={el.name} path={el.name} element={isAuthenticated ? <MainTable props={el} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
                     ))}
             </Routes>
         </>

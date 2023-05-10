@@ -16,8 +16,10 @@ const LoginPage = ({ setIsAuthenticated }) => { // Добавлено новое
             }
         });
         const { data } = await response.json();
+
         if (data) {
             localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('groups', data.group.toString())
             setIsAuthenticated(true);
             history('/servers');
         } else {

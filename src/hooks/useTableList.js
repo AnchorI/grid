@@ -1,10 +1,9 @@
 export const useTableList = ({ onSuccess, onError }) => {
     const getData = async ({ name, brand_id, mnemokod }) => {
-        mnemokod = mnemokod === null ? '' : mnemokod
 
         // const getList = `https://reqres.in/api/${name}`
         // const get = `https://reqres.in/api/${name}/${brand_id}`
-        const getServerList = `http://localhost:8777/api/slave/querry?table=${name}&brand_id=${brand_id}`
+        const getServerList = `http://localhost:8777/api/slave/querry?table=${name}&mnemokod=${mnemokod}`
         // const getServer = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
 
         await fetch(getServerList)

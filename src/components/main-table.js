@@ -25,12 +25,6 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
         };
     }, []);
 
-    const [filter, setFilter] = useState({
-        as_mnemokod: null,
-    });
-
-    const { Option } = Select;
-
     const defaultColDef = useMemo(() => {
         return {
             flex: 1,
@@ -95,9 +89,9 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     };
 
     useEffect(() => {
-        tableUpdate({ name: props.name, mnemokod: filter.as_mnemokod })
+        tableUpdate({ name: props.name, mnemokod: localStorage.getItem('as') })
         console.log('props', props)
-    }, [props.name, filter.as_mnemokod])
+    }, [props.name])
 
     return (
         <>

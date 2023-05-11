@@ -2,13 +2,13 @@ import { AgGridReact } from 'ag-grid-react'
 import {Button, Col, Divider, Row} from 'antd'
 import React, {useEffect, useMemo, useState} from 'react'
 
-import { useTableList } from '../hooks/useTableList'
+import { useRolesList } from '../hooks/useRolesList'
 
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const Table = ({ props, update, name }) => {
+const RolesPage = ({isAuthenticated, setIsAuthenticated}) => {
     const [table, setTable] = useState()
     const statusBar = useMemo(() => {
         return {
@@ -21,7 +21,7 @@ const Table = ({ props, update, name }) => {
             ],
         };
     }, []);
-    const { tableUpdate } = useTableList({
+    const { getRoles } = useRolesList({
         onSuccess: (response) => {
             setTable({
                 ...table,
@@ -42,22 +42,38 @@ const Table = ({ props, update, name }) => {
             console.log(error)
         },
     })
-
+    const handleLogout = () => {
+        localStorage.setItem('isAuthenticated', 'false');
+        setIsAuthenticated(false);
+    };
     useEffect(() => {
-        tableUpdate({ name: props.name, brand_id: props.id })
-    }, [update])
+        getRoles()
+    }, [])
 
     return (
+        <>
+            <Row justify="end">
+            <Col>
+                <div className="auth-status">
+                    {isAuthenticated ? (
+                        <span>Залогинен {localStorage.getItem('groups')}</span>
+                    ) : (
+                        <span>Не залогинен</span>
+                    )}
+                </div>
+                <Button onClick={handleLogout}>Log out</Button>
+            </Col>
+        </Row>
         <div
             className="ag-theme-alpine"
             style={{
-                height: 350,
+                height: '80vh',
                 marginLeft: 10,
                 marginRight: 10,
                 marginBottom: 100,
             }}
         >
-            <Divider>{props.name}</Divider>
+            <Divider>Роли</Divider>
             <AgGridReact
                 columnDefs={table?.columnDefs}
                 rowData={table?.rowData}
@@ -65,7 +81,8 @@ const Table = ({ props, update, name }) => {
                 statusBar={statusBar}
             />
         </div>
+        </>
     )
 }
 
-export default Table
+export default RolesPage

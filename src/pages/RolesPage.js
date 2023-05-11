@@ -10,6 +10,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 
 const RolesPage = ({isAuthenticated, setIsAuthenticated}) => {
     const [table, setTable] = useState()
+
     const statusBar = useMemo(() => {
         return {
             statusPanels: [
@@ -46,6 +47,7 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated}) => {
         localStorage.setItem('isAuthenticated', 'false');
         setIsAuthenticated(false);
     };
+
     useEffect(() => {
         getRoles()
     }, [])
@@ -67,7 +69,7 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated}) => {
         <div
             className="ag-theme-alpine"
             style={{
-                height: '80vh',
+                height: '50vh',
                 marginLeft: 10,
                 marginRight: 10,
                 marginBottom: 100,

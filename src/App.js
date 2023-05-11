@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import MainTable from './components/main-table';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Radio } from 'antd';
@@ -41,7 +41,6 @@ const App = () => {
             return false;
         }
     }
-    console.log('userGroups', userGroups)
     return (
         <>
             <AddModal
@@ -61,15 +60,15 @@ const App = () => {
                     );
                 })}
                 { isAuthenticated && ( userGroups.includes('App-KSM-P-Admin') || userGroups.includes('App-SSM-P-SecAdm') ) &&
-                    <Link key='Роли' to='roles' style={{color: 'white'}}>
-                        <Radio.Button>Роли</Radio.Button>
+                    <Link key='Админ панель' to='admin' style={{color: 'white'}}>
+                        <Radio.Button>Админ панель</Radio.Button>
                     </Link>
                 }
             </Radio.Group>
 
             <Routes>
-                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated}/>} />
-                <Route path="/roles" element={hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> }/>
+                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/admin" element={isAuthenticated ? hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/> : <Navigate to="/login" /> }/>
                 <Route path="/" element={isAuthenticated ? <Navigate to="/servers" /> : <Navigate to="/login" />} /> {/* Перенаправление на страницу логина, если пользователь не авторизован */}
                 {mainTables.map((el) => (
                     hasAccess(userGroups, el.name) && (

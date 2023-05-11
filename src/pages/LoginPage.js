@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
@@ -26,10 +26,10 @@ const LoginPage = ({ setIsAuthenticated }) => { // Добавлено новое
         } else {
             alert('Invalid credentials');
         }
-
     };
 
     return (
+        <>
         <form onSubmit={handleLogin} className="login-form">
             <label className="login-label">
                 Username:
@@ -41,6 +41,7 @@ const LoginPage = ({ setIsAuthenticated }) => { // Добавлено новое
             </label>
             <button type="submit" className="login-button">Login</button>
         </form>
+        </>
     );
 };
 

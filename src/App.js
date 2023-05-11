@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import MainTable from './components/main-table';
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import {Routes, Route, Link, Navigate, useNavigate} from 'react-router-dom';
 import { Radio } from 'antd';
 import AddModal from './components/modals/add-modal';
 import LoginPage from "./pages/LoginPage";
 import RolesPage from "./pages/RolesPage";
 
 const App = () => {
+    const history = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [logoutTimer, setLogoutTimer] = useState(60000);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
     const [mainTables, setMainTables] = useState([
         {
@@ -27,6 +29,7 @@ const App = () => {
     const userGroups = localStorage.getItem('groups');
 
     function hasAccess(userGroups, tableName) {
+        if (!userGroups) return false;
         // Проверяем, может ли пользователь получить доступ к данной таблице
         if (userGroups.includes('App-KSM-P-Admin') || userGroups.includes('App-SSM-P-SecAdm')) {
             // Администраторы имеют доступ ко всем таблицам
@@ -41,6 +44,17 @@ const App = () => {
             return false;
         }
     }
+    console.log('isAuthenticated',isAuthenticated)
+    useEffect(() => {
+        const logoutTimerr = setTimeout(() => {
+            setIsAuthenticated(false);
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('groups');
+            history('/login')
+        }, logoutTimer);
+
+        return () => clearTimeout(logoutTimerr);
+    }, [isAuthenticated, logoutTimer]);
     return (
         <>
             <AddModal
@@ -49,7 +63,12 @@ const App = () => {
                 tables={mainTables}
                 setTables={setMainTables}
             />
-            <Radio.Group style={{ marginLeft: 10 }} buttonStyle={'solid'}>
+            <Radio.Group style={{ marginLeft: 10, marginTop: 10 }} buttonStyle={'solid'}>
+                { isAuthenticated && ( userGroups.includes('App-KSM-P-Admin') || userGroups.includes('App-SSM-P-SecAdm') ) &&
+                    <Link key='Админ панель' to='admin' style={{color: 'white'}}>
+                        <Radio.Button>Админ панель</Radio.Button>
+                    </Link>
+                }
                 {mainTables.map((el) => {
                     const canAccess = isAuthenticated && hasAccess(userGroups, el.name);
 
@@ -59,16 +78,11 @@ const App = () => {
                         </Link>
                     );
                 })}
-                { isAuthenticated && ( userGroups.includes('App-KSM-P-Admin') || userGroups.includes('App-SSM-P-SecAdm') ) &&
-                    <Link key='Админ панель' to='admin' style={{color: 'white'}}>
-                        <Radio.Button>Админ панель</Radio.Button>
-                    </Link>
-                }
             </Radio.Group>
 
             <Routes>
                 <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
-                <Route path="/admin" element={isAuthenticated ? hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/> : <Navigate to="/login" /> }/>
+                <Route path="/admin" element={isAuthenticated ? hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setLogoutTimer={setLogoutTimer} logoutTimer={logoutTimer}/> : <Navigate to="/login" /> }/>
                 <Route path="/" element={isAuthenticated ? <Navigate to="/servers" /> : <Navigate to="/login" />} /> {/* Перенаправление на страницу логина, если пользователь не авторизован */}
                 {mainTables.map((el) => (
                     hasAccess(userGroups, el.name) && (

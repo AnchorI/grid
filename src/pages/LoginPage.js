@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
-const LoginPage = ({ setIsAuthenticated }) => { // Добавлено новое свойство setIsAuthenticated
+const LoginPage = ({ setIsAuthenticated }) => {
     const history = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

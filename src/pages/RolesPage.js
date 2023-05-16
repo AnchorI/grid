@@ -7,13 +7,8 @@ import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
-const RolesPage = ({isAuthenticated, setIsAuthenticated, setLogoutTimer, logoutTimer}) => {
+const RolesPage = ({isAuthenticated, setIsAuthenticated, }) => {
     const [table, setTable] = useState()
-    const [tempLogoutTimer, setTempLogoutTimer] = useState(logoutTimer);
-
-    function handleTimerChange(e) {
-        setLogoutTimer(e.target.value === '' || e.target.value === '0' ? 60 * 1000 : e.target.value * 60 * 1000);
-    }
 
     const statusBar = useMemo(() => {
         return {
@@ -86,13 +81,6 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated, setLogoutTimer, logoutT
                 defaultColDef={{ flex: 2, minWidth: 200 }}
                 statusBar={statusBar}
             />
-            <label>
-                Auto Logout Time {tempLogoutTimer / 1000 / 60} (in minutes):
-                <input
-                    type="number"
-                    onChange={handleTimerChange}
-                />
-            </label>
         </div>
         </>
     )

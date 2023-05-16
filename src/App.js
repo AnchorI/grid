@@ -9,7 +9,7 @@ import RolesPage from "./pages/RolesPage";
 const App = () => {
     const history = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [logoutTimer, setLogoutTimer] = useState(60000);
+    const [logoutTimer, setLogoutTimer] = useState(3600000);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
     const [mainTables, setMainTables] = useState([
         {
@@ -44,7 +44,6 @@ const App = () => {
             return false;
         }
     }
-    console.log('isAuthenticated',isAuthenticated)
     useEffect(() => {
         const logoutTimerr = setTimeout(() => {
             setIsAuthenticated(false);
@@ -82,7 +81,7 @@ const App = () => {
 
             <Routes>
                 <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
-                <Route path="/admin" element={isAuthenticated ? hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setLogoutTimer={setLogoutTimer} logoutTimer={logoutTimer}/> : <Navigate to="/login" /> }/>
+                <Route path="/admin" element={isAuthenticated ? hasAccess(userGroups) && <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" /> }/>
                 <Route path="/" element={isAuthenticated ? <Navigate to="/servers" /> : <Navigate to="/login" />} /> {/* Перенаправление на страницу логина, если пользователь не авторизован */}
                 {mainTables.map((el) => (
                     hasAccess(userGroups, el.name) && (

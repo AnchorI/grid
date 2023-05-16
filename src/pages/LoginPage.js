@@ -9,11 +9,17 @@ const LoginPage = ({ setIsAuthenticated }) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const response = await fetch(`http://localhost:8777/api/slave/auth?username=${username}&password=${password}`, {
-            method: 'GET',
+        const requestBody = {
+            username: username,
+            password: password
+        };
+
+        const response = await fetch('http://localhost:8777/api/slave/auth', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            body: JSON.stringify(requestBody)
         });
         const { data } = await response.json();
 

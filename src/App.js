@@ -28,22 +28,24 @@ const App = () => {
 
     const userGroups = localStorage.getItem('groups');
 
-    function hasAccess(userGroups, tableName) {
+    async function hasAccess(userGroups, tableName) {
         if (!userGroups) return false;
-        // Проверяем, может ли пользователь получить доступ к данной таблице
-        if (userGroups.includes('App-KSM-P-Admin') || userGroups.includes('App-SSM-P-SecAdm')) {
-            // Администраторы имеют доступ ко всем таблицам
-            return true;
-        } else if (userGroups.includes('App-SSM-P-OMN-Viewers') && tableName === 'servers') {
-            // App-SSM-P-OMN-Viewers имеют доступ только к таблице "servers"
-            return true;
-        } else if (userGroups.includes('App-SSM-P-Admins') && tableName === 'users') {
-            // App-SSM-P-Admins имеют доступ только к таблице "users"
-            return true;
-        } else {
-            return false;
-        }
+
+        const requestBody = { group: userGroups, table: tableName };
+        console.log('reqBody', requestBody)
+        const response = await fetch('http://localhost:8777/api/slave/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const result = await response.json();
+        console.log('result', result)
+        return result; // Возвращает true или false в зависимости от результата
     }
+
     useEffect(() => {
         const logoutTimerr = setTimeout(() => {
             setIsAuthenticated(false);
@@ -70,7 +72,6 @@ const App = () => {
                 }
                 {mainTables.map((el) => {
                     const canAccess = isAuthenticated && hasAccess(userGroups, el.name);
-
                     return canAccess && (
                         <Link key={el.name} to={el.name} style={{color: 'white'}}>
                             <Radio.Button>{el.name}</Radio.Button>

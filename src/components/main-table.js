@@ -65,7 +65,6 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
 
     const handleRowClicked = (event) => {
         if (!props.fields) return
-        console.log('event', event.data)
         const updatedTables = props.fields.map((table) => {
             return {
                 name: table,
@@ -93,7 +92,6 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
 
     useEffect(() => {
         tableUpdate({ name: props.name, mnemokod: localStorage.getItem('as') })
-        console.log('props', props)
     }, [props.name])
 
     return (

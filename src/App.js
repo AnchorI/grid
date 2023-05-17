@@ -33,9 +33,6 @@ const App = () => {
     const canAccessTable = (tableName) => {
         return isAuthenticated && accessResults[tableName] === true;
     };
-    console.log(';canAccessTable(el.name)', canAccessTable('servers'))
-    console.log('isAuthenticated', isAuthenticated)
-    console.log('userGroups', userGroups)
 
     useEffect(() => {
         const logoutTimerr = setTimeout(() => {
@@ -64,14 +61,12 @@ const App = () => {
                 });
 
                 const result = await response.json();
-                console.log('result', result)
                 const hasAccess = result === false ? false : result[`${userGroups}`].includes(tableName);
 
                 setAccessResults(prevState => ({
                     ...prevState,
                     [tableName]: hasAccess
                 }));
-                console.log('accessResults', accessResults)
             } catch (error) {
                 console.error('Error checking access:', error);
             }
@@ -81,8 +76,7 @@ const App = () => {
             checkAccess(table.name);
         });
     }, []);
-    console.log('userGroups', userGroups)
-    console.log('isAuthenticated', isAuthenticated)
+
     return (
         <>
             <AddModal

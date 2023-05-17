@@ -28,7 +28,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
             localStorage.setItem('groups', data.group.toString())
             localStorage.setItem('as', data.as.toString())
             setIsAuthenticated(true);
-            history('/servers');
+            history('/');
         } else {
             alert('Invalid credentials');
         }

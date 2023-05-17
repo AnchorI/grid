@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { Divider } from 'antd'
 import { useTableList } from '../hooks/useTableList'
 import Table from './table'
+import {useNavigate} from "react-router-dom";
 import './main-table.css'
 
 import 'ag-grid-enterprise'
@@ -13,6 +14,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     const [table, setTable] = useState()
     const [row, setRow] = useState()
+    const history = useNavigate();
     const statusBar = useMemo(() => {
         return {
             statusPanels: [
@@ -86,6 +88,7 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     const handleLogout = () => {
         localStorage.setItem('isAuthenticated', 'false');
         setIsAuthenticated(false);
+        history('/login')
     };
 
     useEffect(() => {

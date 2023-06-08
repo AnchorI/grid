@@ -73,11 +73,13 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated, }) => {
     }
 
     const handleDownloadCsv = () => {
+        const columnIdToRemove = 'id'; // The ID of the column to remove
+
         const params = {
             skipHeader: false,
             columnGroups: false,
             skipFooters: true,
-            skipGroups: true,
+            skipRowGroups: true,
             skipPinnedTop: true,
             skipPinnedBottom: true,
             allColumns: true,
@@ -90,16 +92,19 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated, }) => {
                     return null; // Skip pinned rows
                 }
                 if (params.node.rowIndex === 0) {
-                    return params.column.getColDef().headerName; // Return column name for the first row
-                }
-                if (params.node.rowIndex === 1) {
-                    return params.value
+                    if (params.column.getColDef()?.field === "id") {
+                        return null; // Skip the "id" column header
+                    }
+                    return params.value;
                 }
                 return null; // Skip other rows
             },
         };
 
         const gridApi = gridRef.current.api;
+        const originalColumnDefs = gridApi.getColumnDefs();
+        const updatedColumnDefs = originalColumnDefs.filter(columnDef => columnDef.field !== columnIdToRemove);
+        gridApi.setColumnDefs(updatedColumnDefs);
         gridApi.exportDataAsCsv(params);
     };
 

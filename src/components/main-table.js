@@ -10,6 +10,7 @@ import './main-table.css'
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
+import AuthStatus from "./auth-status";
 
 const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     const [table, setTable] = useState()
@@ -84,29 +85,14 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
         }
     }
 
-    const handleLogout = () => {
-        localStorage.setItem('isAuthenticated', 'false');
-        setIsAuthenticated(false);
-        history('/login')
-    };
-
     useEffect(() => {
-        tableUpdate({ name: props.name, mnemokod: localStorage.getItem('as') })
-    }, [props.name])
+        tableUpdate({ name: props.name, mnemokod: localStorage.getItem('as'), brand_id: props.id })
+    }, [props.name, props.id])
 
     return (
         <>
             <Row justify="end">
-                <Col>
-                    <div className="auth-status">
-                        {isAuthenticated ? (
-                            <span>Залогинен {localStorage.getItem('groups')}</span>
-                        ) : (
-                            <span>Не залогинен</span>
-                        )}
-                    </div>
-                    <Button onClick={handleLogout}>Log out</Button>
-                </Col>
+                <AuthStatus isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
             </Row>
             <Row>
                 <Col span={24}>

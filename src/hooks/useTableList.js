@@ -1,6 +1,6 @@
 export const useTableList = ({ onSuccess, onError }) => {
     const getData = async ({ name, brand_id, mnemokod }) => {
-
+        console.log('brand_id', brand_id)
         // const getList = `https://reqres.in/api/${name}`
         // const get = `https://reqres.in/api/${name}/${brand_id}`
         const getServerList = `http://localhost:8777/api/slave/querry?table=${name}&mnemokod=${mnemokod}`

@@ -26,6 +26,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
         if (data) {
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('groups', data.group.toString())
+            localStorage.setItem('username', requestBody.username)
             localStorage.setItem('as', data.as.toString())
             setIsAuthenticated(true);
             history('/');

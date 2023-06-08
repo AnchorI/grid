@@ -25,8 +25,35 @@ const App = () => {
             fullrow: true,
             fields: ['users'],
             subTables: [],
+        },
+        {
+            name: 'test',
+            fullrow: true,
+            fields: ['test'],
+            subTables: [],
         }
     ]);
+
+    const [sessionTimeout, setSessionTimeout] = useState(0);
+
+    useEffect(() => {
+        const fetchSessionTimeout = async () => {
+            try {
+                const response = await import('./config/config.json');
+                const { sessionTimeout } = response.default;
+                setSessionTimeout(sessionTimeout);
+            } catch (error) {
+                console.error('Error fetching session timeout:', error);
+            }
+        };
+        fetchSessionTimeout(); // Fetch initially
+
+        const intervalId = setInterval(fetchSessionTimeout, 60000); // Fetch every 1 minute
+
+        return () => {
+            clearInterval(intervalId); // Clean up the interval when the component unmounts
+        };
+    }, []);
 
     const userGroups = localStorage.getItem('groups');
 
@@ -48,6 +75,7 @@ const App = () => {
     useEffect(() => {
         const checkAccess = async (tableName) => {
             if (!userGroups) return false;
+            const arrUserGroup = userGroups.split(",");
 
             const requestBody = { groups: userGroups, table: tableName };
 
@@ -61,8 +89,7 @@ const App = () => {
                 });
 
                 const result = await response.json();
-                const hasAccess = result === false ? false : result[`${userGroups}`].includes(tableName);
-
+                const hasAccess = result === false ? false : arrUserGroup.some(group => result[group]?.includes(tableName));
                 setAccessResults(prevState => ({
                     ...prevState,
                     [tableName]: hasAccess
@@ -77,8 +104,14 @@ const App = () => {
         });
     }, []);
 
+
+
     return (
         <>
+            <div>
+                <h1>Session Timeout: {sessionTimeout} minutes</h1>
+                {/* Other components */}
+            </div>
             <AddModal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}

@@ -6,6 +6,7 @@ import AddModal from './components/modals/add-modal';
 import LoginPage from "./pages/LoginPage";
 import RolesPage from "./pages/RolesPage";
 import NoAccessPage from "./pages/NoAccessPage";
+import SchemaPage from "./pages/SchemaPage";
 
 const App = () => {
     const history = useNavigate();
@@ -124,6 +125,11 @@ const App = () => {
                         <Radio.Button>Админ панель</Radio.Button>
                     </Link>
                 }
+                {isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) &&
+                    <Link key='Схемы' to='schema' style={{ color: 'white' }}>
+                        <Radio.Button>Схемы</Radio.Button>
+                    </Link>
+                }
                 {mainTables.map((el) => {
                     const canAccess = canAccessTable(el.name);
                     return canAccess && (
@@ -138,6 +144,7 @@ const App = () => {
                 <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path="/no_access" element={isAuthenticated ? <NoAccessPage isAuthenticated = {isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to='/login' />} />
                 <Route path="/admin" element={isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) ? <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/servers" />} />
+                <Route path="/schema" element={isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) ? <SchemaPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/servers" />} />
                 <Route path="/" element={isAuthenticated ? <Navigate to="/no_access" /> : <Navigate to="/login" />} />
                 {mainTables.map((el) => (
                     (

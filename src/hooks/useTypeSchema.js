@@ -1,12 +1,10 @@
-export const useRolesList = ({ onSuccess, onError }) => {
-    const getRolesData = async () => {
+export const useTypeSchema = ({ onSuccess, onError }) => {
+    const getTypeSchema = async () => {
 
-        const getRolesList = `http://localhost:8777/api/slave/querry?table=roles`
+        const getTypes = `http://localhost:8777/api/slave/roles/schema-type`
 
-        await fetch(getRolesList)
+        await fetch(getTypes)
             .then(async (response) => {
-                // console.log('res', response.json())
-
                 if (response.status === 200) {
                     return response.json()
                 } else {
@@ -22,8 +20,8 @@ export const useRolesList = ({ onSuccess, onError }) => {
     }
 
     return {
-        getRoles: () => {
-            getRolesData()
+        getTypes: () => {
+            getTypeSchema()
         },
     }
 }

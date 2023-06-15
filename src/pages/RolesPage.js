@@ -29,6 +29,8 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated, }) => {
                 ...table,
                 pivotMode: true,
                 columnDefs: Object.keys(response.data[0]).map((el) => {
+                    console.log('res[0]roles', response.data[0])
+
                     return {
                         field: el,
                         rowDarag: true,

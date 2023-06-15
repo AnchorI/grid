@@ -1,7 +1,9 @@
+import config from '../config/config.json'
+
 export const useGetSchema = ({ onSuccess, onError }) => {
     const getSchemaData = async (type, subtype) => {
 
-        const getRolesList = `http://localhost:8777/api/slave/roles/schema`
+        const getRolesList = `${config.url}/api/slave/roles/schema`
         const requestBody = {
             type: `${type}`,
             subtype: `${subtype}`

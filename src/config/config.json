@@ -1,3 +1,4 @@
 {
-  "sessionTimeout": 233333
+  "sessionTimeout": 233333,
+  "url": "http://localhost:8777"
 }

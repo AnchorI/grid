@@ -3,6 +3,7 @@ import {Col, Divider, Row, Select, notification} from 'antd'
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import axios from 'axios';
 import { Upload, Button } from 'antd';
+import config from '../config/config.json'
 
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
@@ -120,7 +121,7 @@ const SchemaPage = ({isAuthenticated, setIsAuthenticated, }) => {
             formData.append('file', file);
 
             try {
-                const response = await axios.post('http://localhost:8777/api/slave/roles/upload/json', formData);
+                const response = await axios.post(`${config.url}/api/slave/roles/upload/json`, formData);
                 console.log('File uploaded successfully:', response.data);
                 notification.success({
                     message: `${response.data.file_name} успешно загружен`

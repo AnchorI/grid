@@ -1,7 +1,9 @@
+import config from '../config/config.json'
+
 export const useTypeSchema = ({ onSuccess, onError }) => {
     const getTypeSchema = async () => {
 
-        const getTypes = `http://localhost:8777/api/slave/roles/schema-type`
+        const getTypes = `${config.url}/api/slave/roles/schema-type`
 
         await fetch(getTypes)
             .then(async (response) => {

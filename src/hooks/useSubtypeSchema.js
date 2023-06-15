@@ -1,7 +1,9 @@
+import config from '../config/config.json'
+
 export const useSubtypeSchema = ({ onSuccess, onError }) => {
     const getSubtypeSchema = async (type) => {
 
-        const getSubtypes = `http://localhost:8777/api/slave/roles/schema-subtype?type=${type}`
+        const getSubtypes = `${config.url}/api/slave/roles/schema-subtype?type=${type}`
 
         await fetch(getSubtypes)
             .then(async (response) => {

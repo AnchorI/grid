@@ -2,6 +2,7 @@ import { AgGridReact } from 'ag-grid-react'
 import {Button, Col, Divider, Row} from 'antd'
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import { useRolesList } from '../hooks/useRolesList'
+import config from '../config/config.json'
 
 import 'ag-grid-enterprise'
 import 'ag-grid-community/styles/ag-grid.css'
@@ -69,7 +70,7 @@ const RolesPage = ({isAuthenticated, setIsAuthenticated, }) => {
         console.log('changedItem', changedItem)
         const fieldToUpdate = Object.keys(changedItem)[1];
         const changedValue = Object.values(changedItem)[1];
-        const updateUrl = `http://localhost:8777/api/slave/querry?table=portal_roles&pole=${fieldToUpdate}&changedValue=${changedValue}&oldValue=${oldValue}&username=${localStorage.getItem('username')}&update=true&id=${id}`;
+        const updateUrl = `${config.url}/api/slave/querry?table=portal_roles&pole=${fieldToUpdate}&changedValue=${changedValue}&oldValue=${oldValue}&username=${localStorage.getItem('username')}&update=true&id=${id}`;
 
         fetch(updateUrl);
     }

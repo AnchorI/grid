@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
+import config from '../config/config.json'
 
 const LoginPage = ({ setIsAuthenticated }) => {
     const history = useNavigate();
@@ -14,7 +15,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
             password: password
         };
 
-        const response = await fetch('http://localhost:8777/api/slave/auth', {
+        const response = await fetch(`${config.url}/api/slave/auth`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

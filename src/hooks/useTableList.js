@@ -1,10 +1,8 @@
+import config from '../config/config.json'
+
 export const useTableList = ({ onSuccess, onError }) => {
     const getData = async ({ name, brand_id, mnemokod }) => {
-        console.log('brand_id', brand_id)
-        // const getList = `https://reqres.in/api/${name}`
-        // const get = `https://reqres.in/api/${name}/${brand_id}`
-        const getServerList = `http://localhost:8777/api/slave/querry?table=${name}&mnemokod=${mnemokod}`
-        // const getServer = `http://localhost:8777/api/slave/servers/${name}/${brand_id}`
+        const getServerList = `${config.url}/api/slave/querry?table=${name}&mnemokod=${mnemokod}`
 
         await fetch(getServerList)
             .then(async (response) => {

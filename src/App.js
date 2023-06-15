@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RolesPage from "./pages/RolesPage";
 import NoAccessPage from "./pages/NoAccessPage";
 import SchemaPage from "./pages/SchemaPage";
+import config from './config/config.json'
 
 const App = () => {
     const history = useNavigate();
@@ -81,7 +82,7 @@ const App = () => {
             const requestBody = { groups: userGroups, table: tableName };
 
             try {
-                const response = await fetch('http://localhost:8777/api/slave/check', {
+                const response = await fetch(`${config.url}/api/slave/check`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

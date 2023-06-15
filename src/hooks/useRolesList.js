@@ -1,7 +1,9 @@
+import config from '../config/config.json'
+
 export const useRolesList = ({ onSuccess, onError }) => {
     const getRolesData = async () => {
 
-        const getRolesList = `http://localhost:8777/api/slave/querry?table=roles`
+        const getRolesList = `${config.url}/api/slave/querry?table=roles`
 
         await fetch(getRolesList)
             .then(async (response) => {

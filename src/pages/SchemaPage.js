@@ -119,7 +119,7 @@ const SchemaPage = ({isAuthenticated, setIsAuthenticated, }) => {
         if (file) {
             const formData = new FormData();
             formData.append('file', file);
-
+            console.log('formData', formData)
             try {
                 const response = await axios.post(`${config.url}/api/slave/roles/upload/json`, formData);
                 console.log('File uploaded successfully:', response.data);

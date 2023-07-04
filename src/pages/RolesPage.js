@@ -16,6 +16,7 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupForm] = Form.useForm();
+    const [selectedRowData, setSelectedRowData] = useState(null);
 
     const gridRef = useRef(null);
 
@@ -44,8 +45,6 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                         filter: 'agTextColumnFilter',
                         sortable: true,
                         floatingFilter: true,
-                        editable: el !== 'id',
-                        onCellValueChanged: handleCellValueChanged,
                     };
                 }),
                 rowData: response.data,
@@ -55,47 +54,6 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
             console.log(error);
         },
     });
-
-    function handleCellValueChanged(event) {
-        const { data, colDef, newValue, oldValue } = event;
-        const { field } = colDef;
-
-        data[field] = newValue;
-        setOldValue(oldValue);
-
-        const existingDataIndex = changedData.findIndex((item) => item.id === data.id);
-        if (existingDataIndex !== -1) {
-            changedData[existingDataIndex][field] = newValue;
-        } else {
-            changedData.push({ id: data.id, [field]: newValue });
-        }
-        if (changedData.length > 0 && Object.keys(changedData[0]).length > 2) {
-            notification.error({
-                message: `Сохранится только первая измененная ячейка. Сохраните данные и обновите страницу`,
-            });
-            return;
-        }
-        setIsButtonDisabled(changedData.length === 0);
-    }
-
-    const handleSaveChanges = async () => {
-        try {
-            for (const changedItem of changedData) {
-                const { id } = changedItem;
-                const fieldToUpdate = Object.keys(changedItem)[1];
-                const changedValue = Object.values(changedItem)[1];
-                const updateUrl = `${config.url}/api/slave/querry?table=portal_roles&pole=${fieldToUpdate}&changedValue=${changedValue}&oldValue=${oldValue}&username=${localStorage.getItem(
-                    'username'
-                )}&update=true&id=${id}`;
-
-                await fetch(updateUrl);
-            }
-            setChangedData([]);
-            setIsButtonDisabled(true);
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     const handleDownloadCsv = () => {
         const columnIdToRemove = 'id';
@@ -142,29 +100,42 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
     const handlePopupCancel = () => {
         setIsPopupVisible(false);
         popupForm.resetFields();
+        setSelectedRowData(null);
     };
+
+    const handleEditRow = (selectedRow) => {
+        console.log('selectedRowInEditRow', selectedRow)
+        if (selectedRow) {
+            setSelectedRowData(selectedRow);
+            setIsPopupVisible(true);
+        } else {
+            notification.warning({
+                message: 'Warning',
+                description: 'Please select a row to edit.',
+            });
+        }
+    };
+
 
     const handlePopupSave = () => {
         popupForm.validateFields().then((values) => {
-            const newRow = {};
+            const updatedRow = { ...selectedRowData };
 
             table?.columnDefs.forEach((column) => {
                 const { field } = column;
                 if (field !== 'id') {
-                    newRow[field] = values[field];
+                    updatedRow[field] = values[field];
                 }
             });
 
-            console.log('newRow', newRow);
+            const updateUrl = `${config.url}/api/slave/roles/${updatedRow.id}`;
 
-            const createUrl = `${config.url}/api/slave/roles/create`;
-
-            fetch(createUrl, {
-                method: 'POST',
+            fetch(updateUrl, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newRow),
+                body: JSON.stringify(updatedRow),
             })
                 .then((response) => response.json())
                 .then(() => {
@@ -175,6 +146,14 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                     console.log(error);
                 });
         });
+    };
+
+    const handleRowSelection = (event) => {
+        const selectedNodes = event.api.getSelectedNodes();
+        console.log('selectedNodes', selectedNodes)
+        const selectedRow = selectedNodes[0]?.data; // Получаем данные из первого выбранного узла
+        console.log('selectedRow', selectedRow)
+        handleEditRow(selectedRow); // Передаем выбранную строку в функцию handleEditRow
     };
 
 
@@ -203,36 +182,46 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                     rowData={table?.rowData}
                     defaultColDef={{ flex: 2, minWidth: 200 }}
                     statusBar={statusBar}
+                    onRowDoubleClicked={(event) => handleRowSelection(event)} // Изменено обработчик события
+                    rowSelection="single"
                 />
-                <button onClick={handleDownloadCsv}>Download CSV</button>
-                <Button
-                    type="primary"
-                    onClick={handleSaveChanges}
-                    disabled={isButtonDisabled}
-                    style={{ marginTop: 10 }}
-                >
-                    Сохранить изменения
+                <Button type="primary" onClick={handleDownloadCsv} style={{ marginLeft: 10, marginTop: 10 }}>
+                    Скачать CSV
                 </Button>
                 <Button type="primary" onClick={handleAddRecord} style={{ marginLeft: 10, marginTop: 10 }}>
                     Добавить запись
                 </Button>
+                <Button
+                    type="primary"
+                    onClick={selectedRowData ? handleEditRow : () =>
+                        notification.warning({ message: 'Warning', description: 'Please select a row to edit.' })
+                    }
+                    style={{ marginLeft: 10, marginTop: 10 }}
+                >
+                    Edit Row
+                </Button>
                 <Modal
                     visible={isPopupVisible}
-                    title="Добавить запись"
+                    title={selectedRowData ? 'Edit Row' : 'Добавить запись'}
                     onCancel={handlePopupCancel}
                     onOk={handlePopupSave}
                 >
                     <Form form={popupForm} layout="vertical">
                         {table?.columnDefs.map((column) => {
-                            if (column.field !== 'id') { // Exclude the column with field name 'id'
+                            if (column.field !== 'id') {
                                 return (
                                     <Form.Item
                                         key={column.field}
                                         label={column.field}
                                         name={column.field}
                                         rules={[{ required: true, message: `Please enter ${column.field}` }]}
+                                        initialValue={selectedRowData ? selectedRowData[column.field] : undefined}
                                     >
-                                        {column.field === 'text' ? <Input placeholder={"Надо вводить через ,"}/> : <Input/>}
+                                        {column.field === 'text' ? (
+                                            <Input placeholder="Надо вводить через ," />
+                                        ) : (
+                                            <Input />
+                                        )}
                                     </Form.Item>
                                 );
                             }
@@ -240,7 +229,6 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                         })}
                     </Form>
                 </Modal>
-
             </div>
         </>
     );

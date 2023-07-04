@@ -98,16 +98,19 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
     };
 
     const handlePopupCancel = () => {
+        setSelectedRowData(null);
         setIsPopupVisible(false);
         popupForm.resetFields();
-        setSelectedRowData(null);
     };
 
+
     const handleEditRow = (selectedRow) => {
-        console.log('selectedRowInEditRow', selectedRow)
+        handlePopupCancel(); // Закрываем попап перед установкой новых данных
+
         if (selectedRow) {
             setSelectedRowData(selectedRow);
             setIsPopupVisible(true);
+            popupForm.setFieldsValue(selectedRow); // Устанавливаем значения полей формы
         } else {
             notification.warning({
                 message: 'Warning',
@@ -115,6 +118,8 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
             });
         }
     };
+
+
 
 
     const handlePopupSave = () => {
@@ -150,11 +155,12 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
 
     const handleRowSelection = (event) => {
         const selectedNodes = event.api.getSelectedNodes();
-        console.log('selectedNodes', selectedNodes)
-        const selectedRow = selectedNodes[0]?.data; // Получаем данные из первого выбранного узла
-        console.log('selectedRow', selectedRow)
-        handleEditRow(selectedRow); // Передаем выбранную строку в функцию handleEditRow
+        const selectedRow = selectedNodes[0]?.data;
+        handleEditRow(selectedRow);
+
+        setSelectedRowData(null); // Добавьте эту строку
     };
+
 
 
     useEffect(() => {
@@ -190,15 +196,6 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 </Button>
                 <Button type="primary" onClick={handleAddRecord} style={{ marginLeft: 10, marginTop: 10 }}>
                     Добавить запись
-                </Button>
-                <Button
-                    type="primary"
-                    onClick={selectedRowData ? handleEditRow : () =>
-                        notification.warning({ message: 'Warning', description: 'Please select a row to edit.' })
-                    }
-                    style={{ marginLeft: 10, marginTop: 10 }}
-                >
-                    Edit Row
                 </Button>
                 <Modal
                     visible={isPopupVisible}

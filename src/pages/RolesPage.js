@@ -1,5 +1,5 @@
 import { AgGridReact } from 'ag-grid-react';
-import {Button, Col, Divider, notification, Row} from 'antd';
+import { Button, Col, Divider, Form, Input, Modal, notification, Row } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRolesList } from '../hooks/useRolesList';
 import config from '../config/config.json';
@@ -12,8 +12,10 @@ import AuthStatus from '../components/auth-status';
 const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
     const [table, setTable] = useState();
     const [changedData, setChangedData] = useState([]);
-    const [oldValue, setOldValue] = useState(null)
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Добавленное состояние для активации/деактивации кнопки
+    const [oldValue, setOldValue] = useState(null);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupForm] = Form.useForm();
 
     const gridRef = useRef(null);
 
@@ -37,7 +39,7 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 columnDefs: Object.keys(response.data[0]).map((el) => {
                     return {
                         field: el,
-                        rowDarag: true,
+                        rowDrag: false,
                         hide: el === 'id',
                         filter: 'agTextColumnFilter',
                         sortable: true,
@@ -73,7 +75,7 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
             });
             return;
         }
-        setIsButtonDisabled(changedData.length === 0); // Обновление состояния кнопки
+        setIsButtonDisabled(changedData.length === 0);
     }
 
     const handleSaveChanges = async () => {
@@ -88,16 +90,15 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
 
                 await fetch(updateUrl);
             }
-            // Очистка измененных данных после успешного сохранения
-            setChangedData((prevData) => ([]));
-            setIsButtonDisabled(true); // Обновление состояния кнопки
+            setChangedData([]);
+            setIsButtonDisabled(true);
         } catch (error) {
             console.log(error);
         }
     };
 
     const handleDownloadCsv = () => {
-        const columnIdToRemove = 'id'; // The ID of the column to remove
+        const columnIdToRemove = 'id';
 
         const params = {
             skipHeader: false,
@@ -113,15 +114,15 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
             fileName: 'RolesPage.csv',
             processCellCallback: function (params) {
                 if (params.node.rowPinned) {
-                    return null; // Skip pinned rows
+                    return null;
                 }
                 if (params.node.rowIndex === 0) {
                     if (params.column.getColDef()?.field === 'id') {
-                        return null; // Skip the "id" column header
+                        return null;
                     }
                     return params.value;
                 }
-                return null; // Skip other rows
+                return null;
             },
         };
 
@@ -133,6 +134,49 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
         gridApi.setColumnDefs(updatedColumnDefs);
         gridApi.exportDataAsCsv(params);
     };
+
+    const handleAddRecord = () => {
+        setIsPopupVisible(true);
+    };
+
+    const handlePopupCancel = () => {
+        setIsPopupVisible(false);
+        popupForm.resetFields();
+    };
+
+    const handlePopupSave = () => {
+        popupForm.validateFields().then((values) => {
+            const newRow = {};
+
+            table?.columnDefs.forEach((column) => {
+                const { field } = column;
+                if (field !== 'id') {
+                    newRow[field] = values[field];
+                }
+            });
+
+            console.log('newRow', newRow);
+
+            const createUrl = `${config.url}/api/slave/roles/create`;
+
+            fetch(createUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newRow),
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    getRoles();
+                    handlePopupCancel();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+    };
+
 
     useEffect(() => {
         getRoles();
@@ -164,11 +208,39 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 <Button
                     type="primary"
                     onClick={handleSaveChanges}
-                    disabled={isButtonDisabled} // Использование состояния для активации/деактивации кнопки
+                    disabled={isButtonDisabled}
                     style={{ marginTop: 10 }}
                 >
                     Сохранить изменения
                 </Button>
+                <Button type="primary" onClick={handleAddRecord} style={{ marginLeft: 10, marginTop: 10 }}>
+                    Добавить запись
+                </Button>
+                <Modal
+                    visible={isPopupVisible}
+                    title="Добавить запись"
+                    onCancel={handlePopupCancel}
+                    onOk={handlePopupSave}
+                >
+                    <Form form={popupForm} layout="vertical">
+                        {table?.columnDefs.map((column) => {
+                            if (column.field !== 'id') { // Exclude the column with field name 'id'
+                                return (
+                                    <Form.Item
+                                        key={column.field}
+                                        label={column.field}
+                                        name={column.field}
+                                        rules={[{ required: true, message: `Please enter ${column.field}` }]}
+                                    >
+                                        {column.field === 'text' ? <Input placeholder={"Надо вводить через ,"}/> : <Input/>}
+                                    </Form.Item>
+                                );
+                            }
+                            return null;
+                        })}
+                    </Form>
+                </Modal>
+
             </div>
         </>
     );

@@ -88,7 +88,7 @@ const MainTable = ({ props, isAuthenticated, setIsAuthenticated }) => {
     useEffect(() => {
         tableUpdate({ name: props.name, mnemokod: localStorage.getItem('as'), brand_id: props.id })
     }, [props.name, props.id])
-
+    console.log('table', table)
     return (
         <>
             <Row justify="end">

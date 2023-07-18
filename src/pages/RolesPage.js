@@ -74,13 +74,10 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 if (params.node.rowPinned) {
                     return null;
                 }
-                if (params.node.rowIndex === 0) {
-                    if (params.column.getColDef()?.field === 'id') {
-                        return null;
-                    }
-                    return params.value;
+                if (params.column.getColDef()?.field === 'id') {
+                    return null;
                 }
-                return null;
+                return params.value;
             },
         };
 
@@ -89,8 +86,16 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
         const updatedColumnDefs = originalColumnDefs.filter(
             (columnDef) => columnDef.field !== columnIdToRemove
         );
+
+        // Сохраняем текущую структуру столбцов
+        const currentColumnDefs = gridApi.getColumnDefs();
+
+        // Устанавливаем новую структуру столбцов для экспорта
         gridApi.setColumnDefs(updatedColumnDefs);
         gridApi.exportDataAsCsv(params);
+
+        // Восстанавливаем исходную структуру столбцов после экспорта
+        gridApi.setColumnDefs(currentColumnDefs);
     };
 
     const handleAddRecord = () => {
@@ -119,9 +124,6 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
         }
     };
 
-
-
-
     const handlePopupSave = () => {
         popupForm.validateFields().then((values) => {
             const updatedRow = { ...selectedRowData };
@@ -133,10 +135,10 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 }
             });
 
-            const updateUrl = `${config.url}/api/slave/roles/${updatedRow.id}`;
+            const apiUrl = `${config.url}/api/slave/roles${selectedRowData ? `/update/${updatedRow.id}?username=${localStorage.getItem('username')}` : `/create?username=${localStorage.getItem('username')}`}`;
 
-            fetch(updateUrl, {
-                method: 'PATCH',
+            fetch(apiUrl, {
+                method: selectedRowData ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -150,6 +152,7 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
                 .catch((error) => {
                     console.log(error);
                 });
+
         });
     };
 
@@ -158,7 +161,7 @@ const RolesPage = ({ isAuthenticated, setIsAuthenticated }) => {
         const selectedRow = selectedNodes[0]?.data;
         handleEditRow(selectedRow);
 
-        setSelectedRowData(null); // Добавьте эту строку
+        setSelectedRowData(selectedRow); // Обновлено значение
     };
 
 

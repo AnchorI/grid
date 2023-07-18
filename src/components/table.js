@@ -44,7 +44,7 @@ const Table = ({ props, update, name }) => {
     })
 
     useEffect(() => {
-        tableUpdate({ name: props.name, brand_id: props.id })
+        tableUpdate({ name: props.name })
     }, [update])
 
     return (

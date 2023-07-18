@@ -8,6 +8,7 @@ import RolesPage from "./pages/RolesPage";
 import NoAccessPage from "./pages/NoAccessPage";
 import SchemaPage from "./pages/SchemaPage";
 import config from './config/config.json'
+import JobSchedulePage from "./pages/JobSchedulePage";
 
 const App = () => {
     const history = useNavigate();
@@ -19,20 +20,20 @@ const App = () => {
         {
             name: 'servers',
             fullrow: true,
-            fields: ['test'],
-            subTables: [],
+            fields: ['test', 'users'],
+            subTables: ['users', 'test'],
         },
         {
             name: 'users',
             fullrow: true,
             fields: ['users'],
-            subTables: [],
+            subTables: ['users', 'test'],
         },
         {
             name: 'test',
             fullrow: true,
             fields: ['test'],
-            subTables: [],
+            subTables: ['users', 'test'],
         }
     ]);
 
@@ -131,6 +132,11 @@ const App = () => {
                         <Radio.Button>Схемы</Radio.Button>
                     </Link>
                 }
+                {isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) &&
+                    <Link key='Расписание работ' to='job' style={{ color: 'white' }}>
+                        <Radio.Button>Расписание работ</Radio.Button>
+                    </Link>
+                }
                 {mainTables.map((el) => {
                     const canAccess = canAccessTable(el.name);
                     return canAccess && (
@@ -143,6 +149,7 @@ const App = () => {
 
             <Routes>
                 <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/job" element={<JobSchedulePage isAuthenticated = {isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path="/no_access" element={isAuthenticated ? <NoAccessPage isAuthenticated = {isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to='/login' />} />
                 <Route path="/admin" element={isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) ? <RolesPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/servers" />} />
                 <Route path="/schema" element={isAuthenticated && (userGroups.includes('App-KMS-PO-BOKSU') || userGroups.includes('App-SSM-P-SecAdm')) ? <SchemaPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/servers" />} />
